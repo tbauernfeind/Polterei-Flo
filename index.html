@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Millionenshow – Swag Edition</title>
+
+  <!-- WICHTIG für iPad / Mobile -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-container">
+
+    <!-- Kopfbereich mit Titel und Geldleiter -->
+    <header class="game-header">
+      <div class="game-title">Millionenshow</div>
+      <div class="prize-ladder">
+        <!-- 13 Fragen, Geldstufen bis 280 € (oberste zuerst) -->
+        <div class="prize-step">280 €</div>
+        <div class="prize-step">260 €</div>
+        <div class="prize-step">240 €</div>
+        <div class="prize-step">220 €</div>
+        <div class="prize-step">200 €</div>
+        <div class="prize-step">150 €</div>
+        <div class="prize-step">125 €</div>
+        <div class="prize-step">100 €</div>
+        <div class="prize-step">75 €</div>
+        <div class="prize-step">50 €</div>
+        <div class="prize-step">40 €</div>
+        <div class="prize-step">20 €</div>
+        <div class="prize-step">10 €</div>
+      </div>
+    </header>
+
+    <!-- Joker-Bereich -->
+    <section class="lifelines">
+      <button id="fiftyFifty" class="lifeline-btn">50:50</button>
+      <button id="askAudience" class="lifeline-btn">Publikum</button>
+      <button id="phoneAFriend" class="lifeline-btn">Telefonjoker</button>
+    </section>
+
+    <!-- Frage und Antworten -->
+    <main class="question-area">
+      <div id="questionText" class="question-text"></div>
+      <div class="answers">
+        <button class="answer-btn" data-index="0" id="answer0"></button>
+        <button class="answer-btn" data-index="1" id="answer1"></button>
+        <button class="answer-btn" data-index="2" id="answer2"></button>
+        <button class="answer-btn" data-index="3" id="answer3"></button>
+      </div>
+    </main>
+
+    <!-- Steuerung (kein Status-Text mehr) -->
+    <footer class="game-footer">
+      <button id="confirmAnswer" class="control-btn" disabled>Antwort bestätigen</button>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

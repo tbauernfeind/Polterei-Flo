@@ -1,0 +1,187 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #001f3f, #000);
+  color: #fff;
+}
+
+.game-container {
+  max-width: 900px;
+  margin: 10px auto;
+  padding: 15px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.85);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.game-title {
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #ffd700;
+  text-shadow: 0 0 10px #ffd700;
+}
+
+.prize-ladder {
+  display: flex;
+  flex-direction: column-reverse; /* unterste Stufe unten */
+  align-items: flex-end;
+}
+
+.prize-step {
+  padding: 3px 10px;
+  margin: 1px 0;
+  border-radius: 12px;
+  border: 1px solid #555;
+  font-size: 13px;
+}
+
+.prize-step.active {
+  background: linear-gradient(90deg, #ff8c00, #ffd700);
+  color: #000;
+  font-weight: bold;
+}
+
+/* Joker */
+.lifelines {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0 15px;
+}
+
+.lifeline-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid #1e90ff;
+  background: #000d33;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  min-height: 48px;
+  font-size: 16px;
+}
+
+.lifeline-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Joker, die benutzt wurden */
+.lifeline-btn.used {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* Frage + Antworten */
+.question-area {
+  margin-bottom: 15px;
+}
+
+.question-text {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  min-height: 60px;
+}
+
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.answer-btn {
+  padding: 10px 12px;
+  border-radius: 20px;
+  border: 2px solid #4444aa;
+  background: #000c2b;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  font-size: 16px;
+  min-height: 48px;
+}
+
+.answer-btn.selected {
+  border-color: #ffd700;
+  background: #333366;
+}
+
+.answer-btn.correct {
+  background: #1e7e34;
+  border-color: #28a745;
+}
+
+.answer-btn.wrong {
+  background: #7e1e1e;
+  border-color: #dc3545;
+}
+
+/* Footer / Steuerung */
+.game-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 5px;
+  gap: 10px;
+}
+
+.control-btn {
+  padding: 10px 18px;
+  border-radius: 20px;
+  border: none;
+  background: #ffd700;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  min-height: 48px;
+  font-size: 16px;
+}
+
+.control-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Mobile / iPad Hochformat */
+@media (max-width: 768px) {
+  .game-container {
+    width: auto;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .game-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .prize-ladder {
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    justify-content: flex-end;
+  }
+
+  .prize-step {
+    font-size: 12px;
+    margin: 2px 3px;
+  }
+
+  .answers {
+    grid-template-columns: 1fr; /* Antworten untereinander */
+  }
+
+  .game-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -16,7 +16,6 @@ const prizeLevels = [
 ];
 
 // --- Fragen-Array ---
-// prize wird aus prizeLevels gesetzt, Reihenfolge = Geldleiter
 let questions = [
   {
     text:
@@ -42,7 +41,7 @@ let questions = [
   },
   {
     text:
-      "Wer ist der Interpret des Ballermannhits „Buongiorno“?",
+      "Wer ist der Interpret des Ballermannhits „Buongiorno"?",
     answers: [
       "A) Ikke Hüftgold & Mickie Krause",
       "B) Peter Wackel & Julian Sommer",
@@ -75,12 +74,12 @@ let questions = [
   },
   {
     text:
-      "Welcher Song wurde von 2 der 4 Hegerboys bei ihrem Auftritt im Jahr 2018 in Viki‘s Pub zum Besten gegeben?",
+      "Welcher Song wurde von 2 der 4 Hegerboys bei ihrem Auftritt im Jahr 2018 in Viki's Pub zum Besten gegeben?",
     answers: [
       "A) Let It Be",
       "B) Sympathy for the Devil",
       "C) Smells Like Teen Spirit",
-      "D) Baba O‘Riley"
+      "D) Baba O'Riley"
     ],
     correctIndex: 1
   },
@@ -130,7 +129,7 @@ let questions = [
   },
   {
     text:
-      "Mit welchem Dur-Akkord beginnt die berühmte Liverpool-Hymne „You Never Walk Alone“?",
+      "Mit welchem Dur-Akkord beginnt die berühmte Liverpool-Hymne „You Never Walk Alone"?",
     answers: [
       "A) B",
       "B) C",
@@ -163,51 +162,57 @@ let questions = [
   }
 ];
 
-// prizeLevel den Fragen zuordnen (Frage 1 = 10 €, ..., Frage 13 = 280 €)
+// Geldstufen den Fragen zuordnen
 questions = questions.map((q, index) => ({
   ...q,
   prize: prizeLevels[index] || prizeLevels[prizeLevels.length - 1]
 }));
 
 // --- DOM-Elemente ---
-const questionTextEl = document.getElementById("questionText");
-const answerButtons = [
+const questionTextEl  = document.getElementById("questionText");
+const questionMetaEl  = document.getElementById("questionMeta");
+const answerButtons   = [
   document.getElementById("answer0"),
   document.getElementById("answer1"),
   document.getElementById("answer2"),
   document.getElementById("answer3")
 ];
-const confirmBtn = document.getElementById("confirmAnswer");
-
-const fiftyFiftyBtn = document.getElementById("fiftyFifty");
-const askAudienceBtn = document.getElementById("askAudience");
+const answerShells = [
+  document.getElementById("shell0"),
+  document.getElementById("shell1"),
+  document.getElementById("shell2"),
+  document.getElementById("shell3")
+];
+const confirmBtn      = document.getElementById("confirmAnswer");
+const fiftyFiftyBtn   = document.getElementById("fiftyFifty");
+const askAudienceBtn  = document.getElementById("askAudience");
 const phoneAFriendBtn = document.getElementById("phoneAFriend");
+const prizeSteps      = Array.from(document.querySelectorAll(".prize-step"));
 
-const prizeSteps = Array.from(document.querySelectorAll(".prize-step"));
-
-// --- State-Variablen ---
+// --- State ---
 let currentQuestionIndex = 0;
 let selectedIndex = null;
 let answered = false;
-// totalWon = letzter sicher erspielter Betrag (letzte richtige Frage)
 let totalWon = 0;
 
-// Joker-Flags: nur 1x pro Spiel
-let fiftyUsed = false;
+let fiftyUsed   = false;
 let audienceUsed = false;
-let phoneUsed = false;
+let phoneUsed   = false;
 
 // --- Frage laden ---
 function loadQuestion() {
   const q = questions[currentQuestionIndex];
 
   questionTextEl.textContent = q.text;
+  questionMetaEl.textContent =
+    `Frage ${currentQuestionIndex + 1} von ${questions.length} · ${q.prize} €`;
 
   answerButtons.forEach((btn, idx) => {
-    btn.textContent = q.answers[idx];
+    btn.querySelector('.ans-text').textContent = q.answers[idx];
     btn.classList.remove("selected", "correct", "wrong");
     btn.disabled = false;
   });
+  answerShells.forEach(s => s.classList.remove("selected", "correct", "wrong", "removed"));
 
   selectedIndex = null;
   answered = false;
@@ -215,58 +220,48 @@ function loadQuestion() {
 
   updatePrizeLadder();
 
-  // Joker-Zustand entsprechend Flag setzen
-  if (fiftyUsed) {
-    fiftyFiftyBtn.disabled = true;
-    fiftyFiftyBtn.classList.add("used");
-  } else {
-    fiftyFiftyBtn.disabled = false;
-    fiftyFiftyBtn.classList.remove("used");
-  }
+  // Joker-Zustände wiederherstellen
+  syncLifeline(fiftyFiftyBtn,   fiftyUsed);
+  syncLifeline(askAudienceBtn,  audienceUsed);
+  syncLifeline(phoneAFriendBtn, phoneUsed);
+}
 
-  if (audienceUsed) {
-    askAudienceBtn.disabled = true;
-    askAudienceBtn.classList.add("used");
+function syncLifeline(btn, used) {
+  if (used) {
+    btn.disabled = true;
+    btn.classList.add("used");
   } else {
-    askAudienceBtn.disabled = false;
-    askAudienceBtn.classList.remove("used");
-  }
-
-  if (phoneUsed) {
-    phoneAFriendBtn.disabled = true;
-    phoneAFriendBtn.classList.add("used");
-  } else {
-    phoneAFriendBtn.disabled = false;
-    phoneAFriendBtn.classList.remove("used");
+    btn.disabled = false;
+    btn.classList.remove("used");
   }
 }
 
 function updatePrizeLadder() {
-  // Wir haben 13 Stufen, oberste = 280 €, unterste = 10 €
-  // currentQuestionIndex 0 => 10 €, 12 => 280 €
-  const totalSteps = prizeSteps.length;
+  const total = prizeSteps.length; // 13
 
-  prizeSteps.forEach((step) => step.classList.remove("active"));
+  prizeSteps.forEach((step, idxFromTop) => {
+    step.classList.remove("active", "passed");
+    const levelOfStep = total - 1 - idxFromTop; // level 0..12 von oben nach unten
+    if (levelOfStep < currentQuestionIndex) {
+      step.classList.add("passed");
+    }
+  });
 
-  const activeIndexFromBottom = currentQuestionIndex; // 0..12
-  const activeIndexFromTop = totalSteps - 1 - activeIndexFromBottom;
-
-  if (prizeSteps[activeIndexFromTop]) {
-    prizeSteps[activeIndexFromTop].classList.add("active");
+  // Aktive Stufe markieren (aktuelle Frage)
+  const activeFromTop = total - 1 - currentQuestionIndex;
+  if (prizeSteps[activeFromTop]) {
+    prizeSteps[activeFromTop].classList.add("active");
   }
 }
 
 loadQuestion();
 
-// --- Tap-Handler-Helfer (Click + Touch für iPad) ---
+// --- Tap-Helfer (Click + Touch für iPad) ---
 function addTapListener(element, handler) {
   element.addEventListener("click", handler);
   element.addEventListener(
     "touchstart",
-    function (e) {
-      handler(e);
-      e.preventDefault();
-    },
+    (e) => { handler(e); e.preventDefault(); },
     { passive: false }
   );
 }
@@ -275,9 +270,14 @@ function addTapListener(element, handler) {
 answerButtons.forEach((btn) => {
   addTapListener(btn, () => {
     if (answered) return;
-    answerButtons.forEach((b) => b.classList.remove("selected"));
+    answerButtons.forEach((b, i) => {
+      b.classList.remove("selected");
+      answerShells[i].classList.remove("selected");
+    });
+    const idx = parseInt(btn.dataset.index, 10);
     btn.classList.add("selected");
-    selectedIndex = parseInt(btn.dataset.index, 10);
+    answerShells[idx].classList.add("selected");
+    selectedIndex = idx;
     confirmBtn.disabled = false;
   });
 });
@@ -290,24 +290,23 @@ addTapListener(confirmBtn, () => {
 
   const q = questions[currentQuestionIndex];
 
-  // Richtig / falsch einfärben
-  answerButtons.forEach((btn, idx) => {
-    if (idx === q.correctIndex) {
-      btn.classList.add("correct");
-    }
-  });
+  // Richtige Antwort immer grün
+  answerButtons[q.correctIndex].classList.add("correct");
+  answerShells[q.correctIndex].classList.remove("selected");
+  answerShells[q.correctIndex].classList.add("correct");
 
   if (selectedIndex === q.correctIndex) {
-    // Nur hier totalWon aktualisieren – bei falscher Antwort bleibt der alte Wert
     totalWon = q.prize;
   } else {
+    // Falsch gewählte Antwort rot
+    answerButtons[selectedIndex].classList.remove("selected");
     answerButtons[selectedIndex].classList.add("wrong");
+    answerShells[selectedIndex].classList.remove("selected");
+    answerShells[selectedIndex].classList.add("wrong");
   }
 
-  // Nach Beantwortung alle Buttons sperren
   answerButtons.forEach((btn) => (btn.disabled = true));
 
-  // Wenn richtig und es noch eine nächste Frage gibt -> nach kurzer Pause weiter
   if (selectedIndex === q.correctIndex) {
     if (currentQuestionIndex < questions.length - 1) {
       setTimeout(() => {
@@ -315,62 +314,53 @@ addTapListener(confirmBtn, () => {
         loadQuestion();
       }, 2000);
     } else {
-      // Letzte Frage richtig beantwortet
       setTimeout(() => {
-        alert(`Glückwunsch du gehst mit ${totalWon} € ins Casino!`);
+        alert(`Glückwunsch – du gehst mit ${totalWon} € ins Casino! 🎉`);
       }, 1500);
     }
   } else {
-    // Falsche Antwort: totalWon ist noch der letzte richtige Betrag (oder 0)
     setTimeout(() => {
-      alert(`Glückwunsch du gehst mit ${totalWon} € ins Casino!`);
+      alert(`Glückwunsch – du gehst mit ${totalWon} € ins Casino!`);
     }, 1500);
   }
 });
 
-// --- Joker-Funktionen ---
+// --- Joker ---
 
-// 1) 50:50 – nur 1x pro Spiel
+// 50:50
 addTapListener(fiftyFiftyBtn, () => {
   if (answered || fiftyUsed) return;
 
   const q = questions[currentQuestionIndex];
-  const wrongIndices = [0, 1, 2, 3].filter(
-    (i) => i !== q.correctIndex
-  );
-
+  const wrongIndices = [0, 1, 2, 3].filter(i => i !== q.correctIndex);
   shuffleArray(wrongIndices);
   const toRemove = wrongIndices.slice(0, 2);
 
   toRemove.forEach((idx) => {
     answerButtons[idx].disabled = true;
-    answerButtons[idx].textContent = "";
+    answerButtons[idx].querySelector('.ans-text').textContent = "";
+    answerShells[idx].classList.add("removed");
   });
 
   fiftyUsed = true;
-  fiftyFiftyBtn.disabled = true;
-  fiftyFiftyBtn.classList.add("used");
+  syncLifeline(fiftyFiftyBtn, true);
 });
 
-// 2) Publikum – nur 1x pro Spiel, ohne Effekt
+// Publikumsjoker – nur Effekt: Button sperren
 addTapListener(askAudienceBtn, () => {
   if (answered || audienceUsed) return;
-
   audienceUsed = true;
-  askAudienceBtn.disabled = true;
-  askAudienceBtn.classList.add("used");
+  syncLifeline(askAudienceBtn, true);
 });
 
-// 3) Telefonjoker – nur 1x pro Spiel, ohne Effekt
+// Telefonjoker – nur Effekt: Button sperren
 addTapListener(phoneAFriendBtn, () => {
   if (answered || phoneUsed) return;
-
   phoneUsed = true;
-  phoneAFriendBtn.disabled = true;
-  phoneAFriendBtn.classList.add("used");
+  syncLifeline(phoneAFriendBtn, true);
 });
 
-// --- Hilfsfunktion shuffle (nur für 50:50 genutzt) ---
+// --- Hilfsfunktionen ---
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

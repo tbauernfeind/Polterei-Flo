@@ -3,60 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <title>Millionenshow – Swag Edition</title>
-
-  <!-- WICHTIG für iPad / Mobile -->
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="game-container">
 
-    <!-- Kopfbereich mit Titel und Geldleiter -->
-    <header class="game-header">
-      <div class="game-title">Millionenshow</div>
-      <div class="prize-ladder">
-        <!-- 13 Fragen, Geldstufen bis 280 € (oberste zuerst) -->
-        <div class="prize-step">280 €</div>
-        <div class="prize-step">260 €</div>
-        <div class="prize-step">240 €</div>
-        <div class="prize-step">220 €</div>
-        <div class="prize-step">200 €</div>
-        <div class="prize-step">150 €</div>
-        <div class="prize-step">125 €</div>
-        <div class="prize-step">100 €</div>
-        <div class="prize-step">75 €</div>
-        <div class="prize-step">50 €</div>
-        <div class="prize-step">40 €</div>
-        <div class="prize-step">20 €</div>
-        <div class="prize-step">10 €</div>
-      </div>
-    </header>
-
-    <!-- Joker-Bereich -->
-    <section class="lifelines">
-      <button id="fiftyFifty" class="lifeline-btn">50:50</button>
-      <button id="askAudience" class="lifeline-btn">Publikum</button>
-      <button id="phoneAFriend" class="lifeline-btn">Telefonjoker</button>
-    </section>
-
-    <!-- Frage und Antworten -->
-    <main class="question-area">
-      <div id="questionText" class="question-text"></div>
-      <div class="answers">
-        <button class="answer-btn" data-index="0" id="answer0"></button>
-        <button class="answer-btn" data-index="1" id="answer1"></button>
-        <button class="answer-btn" data-index="2" id="answer2"></button>
-        <button class="answer-btn" data-index="3" id="answer3"></button>
-      </div>
-    </main>
-
-    <!-- Steuerung (kein Status-Text mehr) -->
-    <footer class="game-footer">
-      <button id="confirmAnswer" class="control-btn" disabled>Antwort bestätigen</button>
-    </footer>
+  <!-- Atmosphärische Hintergrund-Elemente -->
+  <div class="bg-layer">
+    <div class="bg-ring bg-ring-1"></div>
+    <div class="bg-ring bg-ring-2"></div>
+    <div class="bg-ring bg-ring-3"></div>
+    <div class="bg-spot"></div>
   </div>
+
+  <div class="game-container">
+    <div class="game-layout">
+
+      <!-- ===== Haupt-Spielbereich ===== -->
+      <div class="game-area">
+
+        <header class="game-header">
+          <div class="game-title">Millionenshow</div>
+          <div class="game-subtitle">Swag Edition</div>
+        </header>
+
+        <!-- Joker -->
+        <section class="lifelines">
+          <button id="fiftyFifty" class="lifeline-btn">
+            <span class="lf-circle">50:50</span>
+            <span class="lf-label">Fifty-Fifty</span>
+          </button>
+          <button id="askAudience" class="lifeline-btn">
+            <span class="lf-circle lf-icon">&#128101;</span>
+            <span class="lf-label">Publikum</span>
+          </button>
+          <button id="phoneAFriend" class="lifeline-btn">
+            <span class="lf-circle lf-icon">&#128222;</span>
+            <span class="lf-label">Telefon</span>
+          </button>
+        </section>
+
+        <!-- Frage -->
+        <main class="question-area">
+          <div class="question-box">
+            <div class="question-meta" id="questionMeta">Frage 1 von 13 &middot; 10 &euro;</div>
+            <div id="questionText" class="question-text"></div>
+          </div>
+
+          <!-- Antworten: hex-förmige Buttons -->
+          <div class="answers">
+            <div class="answer-shell" id="shell0">
+              <button class="answer-btn" data-index="0" id="answer0">
+                <span class="ans-letter">A</span>
+                <span class="ans-text"></span>
+              </button>
+            </div>
+            <div class="answer-shell" id="shell1">
+              <button class="answer-btn" data-index="1" id="answer1">
+                <span class="ans-letter">B</span>
+                <span class="ans-text"></span>
+              </button>
+            </div>
+            <div class="answer-shell" id="shell2">
+              <button class="answer-btn" data-index="2" id="answer2">
+                <span class="ans-letter">C</span>
+                <span class="ans-text"></span>
+              </button>
+            </div>
+            <div class="answer-shell" id="shell3">
+              <button class="answer-btn" data-index="3" id="answer3">
+                <span class="ans-letter">D</span>
+                <span class="ans-text"></span>
+              </button>
+            </div>
+          </div>
+        </main>
+
+        <footer class="game-footer">
+          <button id="confirmAnswer" class="confirm-btn" disabled>
+            Antwort bestätigen
+          </button>
+        </footer>
+
+      </div><!-- /game-area -->
+
+      <!-- ===== Geldleiter ===== -->
+      <aside class="prize-panel">
+        <div class="prize-ladder">
+          <!-- Oberste Stufe zuerst (höchster Betrag oben) -->
+          <div class="prize-step" data-level="12">280 &euro;</div>
+          <div class="prize-step" data-level="11">260 &euro;</div>
+          <div class="prize-step" data-level="10">220 &euro;</div>
+          <div class="prize-step" data-level="9">200 &euro;</div>
+          <div class="prize-step safe-level" data-level="8">150 &euro;</div>
+          <div class="prize-step" data-level="7">125 &euro;</div>
+          <div class="prize-step" data-level="6">100 &euro;</div>
+          <div class="prize-step" data-level="5">75 &euro;</div>
+          <div class="prize-step safe-level" data-level="4">50 &euro;</div>
+          <div class="prize-step" data-level="3">40 &euro;</div>
+          <div class="prize-step" data-level="2">30 &euro;</div>
+          <div class="prize-step" data-level="1">20 &euro;</div>
+          <div class="prize-step" data-level="0">10 &euro;</div>
+        </div>
+      </aside>
+
+    </div><!-- /game-layout -->
+  </div><!-- /game-container -->
 
   <script src="script.js"></script>
 </body>

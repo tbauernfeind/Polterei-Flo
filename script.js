@@ -9,10 +9,10 @@ const prizeLevels = [
   100,  // F7
   125,  // F8
   150,  // F9
-  200,  // F10
-  220,  // F11 (You never walk alone)
-  260,  // F12 (Algorithmus)
-  280   // F13 (Tennis)
+  200,  // F10  <- hier ist die 200-€-Marke
+  220,  // F11
+  240,  // F12
+  260   // F13
 ];
 
 // --- Fragen-Array ---
@@ -163,7 +163,7 @@ let questions = [
   }
 ];
 
-// prizeLevel den Fragen zuordnen (Frage 1 = 10 €, ..., Frage 13 = 280 €)
+// prizeLevel den Fragen zuordnen (Frage 1 = 10 €, ..., Frage 13 = 260 €)
 questions = questions.map((q, index) => ({
   ...q,
   prize: prizeLevels[index] || prizeLevels[prizeLevels.length - 1]
@@ -242,8 +242,8 @@ function loadQuestion() {
 }
 
 function updatePrizeLadder() {
-  // Wir haben 13 Stufen, oberste = 280 €, unterste = 10 €
-  // currentQuestionIndex 0 => 10 €, 12 => 280 €
+  // Wir haben 13 Stufen, oberste = 260 €, unterste = 10 €
+  // currentQuestionIndex 0 => 10 €, 12 => 260 €
   const totalSteps = prizeSteps.length;
 
   prizeSteps.forEach((step) => step.classList.remove("active"));
